@@ -12,6 +12,7 @@ class TodoListTableViewController: UITableViewController {
 
     var itemArray = ["unlock doors", "activate pack-a-punch", "build shield", "kill zombies"]
     let cellID = "TodoListItemCell"
+    let defaults = UserDefaults.standard
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,9 +27,10 @@ class TodoListTableViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath)
-
+        if let items = defaults.array(forKey: "TodoListItems") as? [String] {
+            itemArray = items
+        }
         cell.textLabel?.text = itemArray[indexPath.row]
-
         return cell
     }
 
@@ -52,6 +54,7 @@ class TodoListTableViewController: UITableViewController {
         var textField = UITextField()
         let action = UIAlertAction(title: "Add", style: .default) { (action) in
             self.itemArray.append(textField.text!)
+            self.defaults.setValue(self.itemArray, forKey: "TodoListItems")
             self.tableView.reloadData()
         }
         alert.addTextField { (alertTextField) in
